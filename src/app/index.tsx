@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Text, TextInput, TouchableOpacity, Image, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, Image, View, Alert  } from 'react-native';
 import { Audio } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -75,6 +75,10 @@ export default function App() {
 
   // Função para iniciar os timers em loop
   const startTimersLoop = () => {
+    if (!workSeconds || !restSeconds) {
+      Alert.alert('Erro', 'Por favor, preencha os tempos de Trabalho e Descanso.');
+      return; // Impede a execução se algum campo estiver vazio
+    }
     setIsRunning(true);
     // Começa o primeiro timer (Trabalho)
     if (workSeconds && !restSeconds) {
