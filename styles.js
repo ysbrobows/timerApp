@@ -66,6 +66,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF', // Cor da fonte branca
     paddingLeft: 10, // Ajuste para o texto não ficar colado à borda
   },
+  settingsIcon: {
+    position: 'absolute', // Posicionamento absoluto para posicionar no topo direito
+    top: 40, // Ajuste do padding top conforme necessário
+    right: 20, // Para ficar na extrema direita
+  }
 });
 
 export default styles;

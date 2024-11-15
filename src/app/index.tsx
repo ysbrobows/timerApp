@@ -118,7 +118,7 @@ export default function App() {
   return (
     <LinearGradient
       colors={theme === 'light' ? ['#19f1b2', '#085d7f'] : ['#2E2E2E', '#2E2E2E']}
-      style={styles.container}
+      style={[styles.container, { paddingTop: 40 }]} // Aumentando o padding do topo
     >
       {/* Ícone de Engrenagem no canto superior direito */}
       <Ionicons
@@ -126,7 +126,9 @@ export default function App() {
         size={30}
         color="white"
         onPress={() => setShowSettings((prev) => !prev)} // Alterna entre a tela de configurações e a tela principal
+        style={styles.settingsIcon} // Adicionando uma classe de estilo para personalizar o ícone
       />
+
 
       {/* Exibe o SettingsScreen quando o estado showSettings for true */}
       {showSettings ? (
