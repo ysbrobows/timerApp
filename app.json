@@ -1,0 +1,37 @@
+{
+  "expo": {    
+    "scheme": "timerApp",  
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "name": "TimerApp",
+    "slug": "timerApp",
+    "icon": "./assets/iconLogo.png",
+    "platforms": [
+      "android",
+      "web"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.ysbrobows.timerapp"
+    },
+    "android": {
+      "package": "com.ysbrobows.timerapp",
+      "icon": "./assets/iconLogo.png"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/iconLogo.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2d1ff3c9-f397-424f-82d0-f89508deab6f"
+      }
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}

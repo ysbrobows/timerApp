@@ -1,24 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import Sound from 'react-native-sound'; // Importando a biblioteca Sound
-import styles from './styles'; // Importando os estilos
-import { Platform } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Audio } from 'expo-av';
+import styles from '../../styles';
+import { LinearGradient } from 'expo-linear-gradient';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-
-// Carregue o som que você quer tocar durante o timer
-const tickSound = new Sound('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', Sound.MAIN_BUNDLE, (error) => {
-  if (error) {
-    console.log('Erro ao carregar o som:', error);
-  }
-});
-
-export default function App() {
-  const [workSeconds, setWorkSeconds] = useState(''); // Tempo de trabalho
-  const [restSeconds, setRestSeconds] = useState(''); // Tempo de descanso
+export default function App({ navigation }) {
+  const [workSeconds, setWorkSeconds] = useState('');
+  const [restSeconds, setRestSeconds] = useState('');
   const [countdown, setCountdown] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
-  const [currentTimer, setCurrentTimer] = useState(1); // Controla qual timer está ativo
-  const timerInterval = useRef(null); // Usando useRef para manter a referência do intervalo
+  const [currentTimer, setCurrentTimer] = useState(1);
+  const timerInterval = useRef(null);
+  const sound = useRef(new Audio.Sound());
+  const [isSoundLoaded, setIsSoundLoaded] = useState(false);
 
   // Função para iniciar o timer
   const startTimer = (seconds) => {
@@ -28,9 +23,6 @@ export default function App() {
     timerInterval.current = setInterval(() => {
       remainingSeconds -= 1;
       setCountdown(remainingSeconds);
-      
-      // Toca o som a cada segundo
-      tickSound.play();
 
       if (remainingSeconds <= 0) {
         clearInterval(timerInterval.current);
@@ -40,7 +32,30 @@ export default function App() {
           setCurrentTimer((prev) => (prev === 1 ? 2 : 1));
         }
       }
+
+      // Verifique se o tempo de descanso chegou a 11 segundos
+      if (currentTimer === 2 && remainingSeconds === 10) {
+        playSound(); // Tocar o som
+      }
     }, 1000);
+  };
+
+  // Função para carregar e tocar o som
+  const playSound = async () => {
+    try {
+      // Se o som já estiver carregado, apenas toque-o
+      if (isSoundLoaded) {
+        await sound.current.stopAsync(); // Para o som anterior
+        await sound.current.playAsync(); // Reproduz o som novamente
+      } else {
+        // Carrega o som pela primeira vez
+        await sound.current.loadAsync(require('../assets/10seg.mp3'));
+        setIsSoundLoaded(true); // Marca o som como carregado
+        await sound.current.playAsync(); // Toca o som
+      }
+    } catch (error) {
+      console.log('Erro ao tocar o som:', error);
+    }
   };
 
   // Função para iniciar os timers em loop
@@ -60,10 +75,13 @@ export default function App() {
     setIsRunning(false);
     setCountdown(null);
     setCurrentTimer(1); // Reseta para o timer de trabalho
+    if (isSoundLoaded) {
+      sound.current.stopAsync(); // Para o som quando o timer for parado
+    }
   };
 
   // UseEffect para controlar o ciclo entre os timers
-  useEffect(() => {
+  React.useEffect(() => {
     if (isRunning) {
       if (currentTimer === 1 && workSeconds) {
         startTimer(Number(workSeconds)); // Timer de trabalho
@@ -95,7 +113,19 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={['#19f1b2', '#085d7f']} style={styles.container}>
+      {/* Ícone de Engrenagem no canto superior direito */}
+      <TouchableOpacity
+        style={styles.settingsButton}
+        onPress={() => navigation.navigate('SettingsScreen')} // 'navigation' agora está disponível
+      >
+        <Ionicons name="settings" size={30} color="white" />
+      </TouchableOpacity>
+
+      {/* Logo do aplicativo */}
+      <Image source={require('./assets/timerlogo.png')} style={styles.logo} />
+
+      {/* Inputs e botões */}
       <Text style={styles.label}>Trabalho (segundos):</Text>
       <TextInput
         style={styles.input}
@@ -127,6 +157,6 @@ export default function App() {
           {getTimerTitle()}: {countdown} segundos
         </Text>
       )}
-    </View>
+    </LinearGradient>
   );
 }
