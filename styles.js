@@ -6,6 +6,9 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: 'transparent', // Definindo o fundo como transparente ou remova para usar o fundo padrão da tela
   },
+  hidden: {
+    display: 'none',
+  },
   logo: {
     width: 200, // Largura da logo
     height: 200, // Altura da logo

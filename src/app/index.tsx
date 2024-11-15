@@ -141,7 +141,6 @@ export default function App() {
         style={[styles.settingsIcon, { zIndex: 1 }]} // Adicionando uma classe de estilo para personalizar o ícone
       />
 
-
       {/* Exibe o SettingsScreen quando o estado showSettings for true */}
       {showSettings ? (
         <SettingsScreen setShowSettings={setShowSettings} setTheme={handleChangeTheme} theme={theme} />
@@ -150,25 +149,30 @@ export default function App() {
           {/* Logo do aplicativo */}
           <Image source={require('../../assets/timerlogo.png')} style={styles.logo} />
 
-          {/* Inputs e botões */}
-          <Text style={styles.label}>Trabalho (segundos):</Text>
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            value={workSeconds}
-            onChangeText={setWorkSeconds}
-            placeholder="Segundos"
-            editable={!isRunning}
-          />
-          <Text style={styles.label}>Descanso (segundos):</Text>
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            value={restSeconds}
-            onChangeText={setRestSeconds}
-            placeholder="Segundos"
-            editable={!isRunning}
-          />
+          {/* Contêiner para os Inputs e Labels */}
+          <View style={isRunning && styles.hidden}>
+            <Text style={styles.label}>Trabalho (segundos):</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={workSeconds}
+              onChangeText={setWorkSeconds}
+              placeholder="Segundos"
+              editable={!isRunning}
+            />
+          </View>
+
+          <View style={isRunning && styles.hidden}>
+            <Text style={styles.label}>Descanso (segundos):</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={restSeconds}
+              onChangeText={setRestSeconds}
+              placeholder="Segundos"
+              editable={!isRunning}
+            />
+          </View>
 
           <TouchableOpacity
             style={[styles.button, isRunning && styles.buttonStop]}
