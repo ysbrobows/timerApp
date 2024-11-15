@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../../styles';
 import SettingsScreen from './SettingsScreen';
-import { loadTheme, saveTheme, loadTimers, saveTimers } from './storageUtils';
+import { loadTheme, saveTheme, loadTimers, saveTimers, loadVoiceAssistant } from './storageUtils';
 
 export default function App() {
   const [workSeconds, setWorkSeconds] = useState('');
@@ -18,12 +18,25 @@ export default function App() {
   const timerInterval = useRef<NodeJS.Timeout | null>(null);
   const sound = useRef(new Audio.Sound());
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
+  const [voiceAssistantState, setVoiceAssistantState] = useState(null);
  
   // Carregamentos quando o componente for carregado
   useEffect(() => {
-    console.log("use");
-    loadTheme(); // Carrega o tema
-    
+    loadTheme().then((loadedTheme) => {
+      setTheme(loadedTheme || 'light'); // Defina o tema carregado ou 'light' por padrão
+    }).catch((error) => {
+      console.error('Erro ao carregar tema:', error);
+    });
+
+    //   // Carrega o estado do Voice Assistant
+    // loadVoiceAssistant().then((voiceAssistantState) => {
+    //   // Use o estado carregado do assistente de voz aqui
+    //   setVoiceAssistantState(voiceAssistantState);
+    //   console.log(voiceAssistantState); // Ou qualquer ação que deseje realizar com o estado carregado
+    // }).catch((error) => {
+    //   console.error("Erro ao carregar o assistente de voz:", error);
+    // });
+      
     loadTimers().then((timers) => {
       setWorkSeconds(timers.workSeconds);        
       setRestSeconds(timers.restSeconds);
@@ -50,34 +63,58 @@ export default function App() {
       if (remainingSeconds <= 0) {
         clearInterval(timerInterval.current as NodeJS.Timeout);
 
-        if (isRunning) {
+        if (isRunning) {          
           // Alterna entre o timer de trabalho e o timer de descanso
           setCurrentTimer((prev) => (prev === 1 ? 2 : 1));
+          console.log(remainingSeconds);
+          if (currentTimer === 1 && remainingSeconds == 0 && voiceAssistantState != 'off'){
+            console.log("playRestSound");
+            playRestSound();
+          }
         }
       }
 
       // Verifique se o tempo de descanso chegou a 11 segundos
-      if (currentTimer === 2 && remainingSeconds === 10) {
-        playSound(); // Tocar o som
+      if (currentTimer === 2 && remainingSeconds === 11 && voiceAssistantState == '10seg') {
+        playSound10seg(); // Tocar o som
+      }
+      else if (currentTimer === 2 && remainingSeconds === 6 && voiceAssistantState == '5seg') {
+        playSound5seg(); // Tocar o som
       }
     }, 1000);
   };
 
   // Função para carregar e tocar o som
-  const playSound = async () => {
+  const playSound10seg = async () => {
     try {
-      // Se o som já estiver carregado, apenas toque-o
-      if (isSoundLoaded) {
-        await sound.current.stopAsync(); // Para o som anterior
-        await sound.current.playAsync(); // Reproduz o som novamente
-      } else {
-        // Carrega o som pela primeira vez
+        await sound.current.unloadAsync();
         await sound.current.loadAsync(require('../../assets/10seg.mp3'));
         setIsSoundLoaded(true); // Marca o som como carregado
-        await sound.current.playAsync(); // Toca o som
-      }
+        await sound.current.playAsync(); // Toca o som      
     } catch (error) {
       console.log('Erro ao tocar o som:', error);
+    }
+  };
+
+  const playSound5seg = async () => {
+    try {
+        await sound.current.unloadAsync();
+        await sound.current.loadAsync(require('../../assets/5seg.mp3'));
+        setIsSoundLoaded(true); // Marca o som como carregado
+        await sound.current.playAsync(); // Toca o som      
+    } catch (error) {
+      console.log('Erro ao tocar o som:', error);
+    }
+  };
+
+  const playRestSound = async () => {
+    try {
+        await sound.current.unloadAsync(); 
+        await sound.current.loadAsync(require('../../assets/descanso.mp3'));
+        setIsSoundLoaded(true); 
+        await sound.current.playAsync();     
+    } catch (error) {
+      console.log('Erro ao tocar o som de descanso:', error);
     }
   };
 
@@ -123,6 +160,13 @@ export default function App() {
 
   // Função para alternar o estado do botão (Start/Stop)
   const handleStartStop = () => {
+    loadVoiceAssistant().then((voiceAssistantState) => {
+      // Use o estado carregado do assistente de voz aqui
+      setVoiceAssistantState(voiceAssistantState);
+      console.log(voiceAssistantState); // Ou qualquer ação que deseje realizar com o estado carregado
+    }).catch((error) => {
+      console.error("Erro ao carregar o assistente de voz:", error);
+    });
     if (isRunning) {
       stopTimers();
     } else {

@@ -73,6 +73,12 @@ const styles = StyleSheet.create({
     position: 'absolute', // Posicionamento absoluto para posicionar no topo direito
     top: 40, // Ajuste do padding top conforme necessário
     right: 20, // Para ficar na extrema direita
+  },
+  titleCfg:
+  {
+    fontSize: 20,
+    color: '#FFFFFF',
+    paddingBottom: 30
   }
 });
 

@@ -49,3 +49,23 @@ export const saveTimers = async (workSeconds: string, restSeconds: string) => {
     console.log('Erro ao salvar os tempos no AsyncStorage:', error);
   }
 };
+
+// Função para salvar a configuração do assistente de voz
+export const saveVoiceAssistant = async (voiceSetting: string) => {
+  try {
+    await AsyncStorage.setItem('voiceAssistant', voiceSetting); // Salva a configuração do assistente de voz
+  } catch (error) {
+    console.log('Erro ao salvar a configuração do assistente de voz:', error);
+  }
+};
+
+// Função para carregar a configuração do assistente de voz
+export const loadVoiceAssistant = async (): Promise<string | null> => {
+  try {
+    const savedVoiceSetting = await AsyncStorage.getItem('voiceAssistant');
+    return savedVoiceSetting;
+  } catch (error) {
+    console.log('Erro ao carregar a configuração do assistente de voz:', error);
+    return null;
+  }
+};
