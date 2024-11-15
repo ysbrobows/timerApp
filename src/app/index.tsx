@@ -5,6 +5,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../../styles';
 import SettingsScreen from './SettingsScreen';
+import { loadTheme, saveTheme } from './themeUtils';
+
 
 export default function App() {
   const [workSeconds, setWorkSeconds] = useState('');
@@ -17,6 +19,17 @@ export default function App() {
   const timerInterval = useRef<NodeJS.Timeout | null>(null);
   const sound = useRef(new Audio.Sound());
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
+
+    // Chama a função loadTheme quando o componente é montado
+    useEffect(() => {
+      loadTheme(); // Carrega o tema quando o componente for carregado
+    }, []);
+  
+    // Função para alterar o tema e salvar a preferência
+    const handleChangeTheme = (newTheme: string) => {
+      setTheme(newTheme);
+      saveTheme(newTheme); // Salva o novo tema
+    };
 
   // Função para iniciar o timer
   const startTimer = (seconds: number) => {
@@ -132,7 +145,7 @@ export default function App() {
 
       {/* Exibe o SettingsScreen quando o estado showSettings for true */}
       {showSettings ? (
-        <SettingsScreen setShowSettings={setShowSettings} setTheme={setTheme} theme={theme} />
+        <SettingsScreen setShowSettings={setShowSettings} setTheme={handleChangeTheme} theme={theme} />
       ) : (
         <>
           {/* Logo do aplicativo */}
