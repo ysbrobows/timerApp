@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Text, TextInput, TouchableOpacity, Image, View } from 'react-native';
 import { Audio } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../../styles';
-import { useNavigation, NavigationProp } from '@react-navigation/native'; // Importar o NavigationProp
+import SettingsScreen from './SettingsScreen';
 
 export default function App() {
   const [workSeconds, setWorkSeconds] = useState('');
@@ -12,6 +12,7 @@ export default function App() {
   const [countdown, setCountdown] = useState<number | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [currentTimer, setCurrentTimer] = useState(1);
+  const [showSettings, setShowSettings] = useState(false); // Estado para controlar a exibição de SettingsScreen
   const timerInterval = useRef<NodeJS.Timeout | null>(null);
   const sound = useRef(new Audio.Sound());
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
@@ -106,11 +107,11 @@ export default function App() {
   // Função para determinar o título baseado no timer ativo
   const getTimerTitle = () => {
     if (currentTimer === 1) {
-      return "Tempo de Trabalho";
+      return 'Tempo de Trabalho';
     } else if (currentTimer === 2) {
-      return "Tempo de Descanso";
+      return 'Tempo de Descanso';
     }
-    return "Tempo restante";
+    return 'Tempo restante';
   };
 
   return (
@@ -120,42 +121,50 @@ export default function App() {
         name="settings"
         size={30}
         color="white"
+        onPress={() => setShowSettings((prev) => !prev)} // Alterna entre a tela de configurações e a tela principal
       />
 
-      {/* Logo do aplicativo */}
-      <Image source={require('../../assets/timerlogo.png')} style={styles.logo} />
+      {/* Exibe o SettingsScreen quando o estado showSettings for true */}
+      {showSettings ? (
+        <SettingsScreen setShowSettings={setShowSettings} />
+      ) : (
+        <>
+          {/* Logo do aplicativo */}
+          <Image source={require('../../assets/timerlogo.png')} style={styles.logo} />
 
-      {/* Inputs e botões */}
-      <Text style={styles.label}>Trabalho (segundos):</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={workSeconds}
-        onChangeText={setWorkSeconds}
-        placeholder="Segundos"
-        editable={!isRunning}
-      />
-      <Text style={styles.label}>Descanso (segundos):</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={restSeconds}
-        onChangeText={setRestSeconds}
-        placeholder="Segundos"
-        editable={!isRunning}
-      />
+          {/* Inputs e botões */}
+          <Text style={styles.label}>Trabalho (segundos):</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            value={workSeconds}
+            onChangeText={setWorkSeconds}
+            placeholder="Segundos"
+            editable={!isRunning}
+          />
+          <Text style={styles.label}>Descanso (segundos):</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            value={restSeconds}
+            onChangeText={setRestSeconds}
+            placeholder="Segundos"
+            editable={!isRunning}
+          />
 
-      <TouchableOpacity
-        style={[styles.button, isRunning && styles.buttonStop]}
-        onPress={handleStartStop}
-      >
-        <Text style={styles.buttonText}>{isRunning ? 'STOP' : 'Start'}</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, isRunning && styles.buttonStop]}
+            onPress={handleStartStop}
+          >
+            <Text style={styles.buttonText}>{isRunning ? 'STOP' : 'Start'}</Text>
+          </TouchableOpacity>
 
-      {countdown !== null && (
-        <Text style={styles.timerText}>
-          {getTimerTitle()}: {countdown} segundos
-        </Text>
+          {countdown !== null && (
+            <Text style={styles.timerText}>
+              {getTimerTitle()}: {countdown} segundos
+            </Text>
+          )}
+        </>
       )}
     </LinearGradient>
   );
