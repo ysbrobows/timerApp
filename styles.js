@@ -1,11 +1,10 @@
-// styles.js
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#333',
+    backgroundColor: 'transparent', // Definindo o fundo como transparente ou remova para usar o fundo padrão da tela
   },
   logo: {
     width: 200, // Largura da logo
@@ -18,7 +17,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginVertical: 5,
-    color: '#fff',
+    color: '#fff', // Cor do texto como branco
   },
   input: {
     borderWidth: 1,
@@ -57,6 +56,15 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     borderRadius: 30,
+  },
+  picker: {
+    height: 50,
+    width: 200,
+    backgroundColor: '#2E2E2E', // Fundo escuro
+    borderColor: '#FFFFFF', // Cor da borda branca
+    borderWidth: 1, // Definindo a largura da borda
+    color: '#FFFFFF', // Cor da fonte branca
+    paddingLeft: 10, // Ajuste para o texto não ficar colado à borda
   },
 });
 

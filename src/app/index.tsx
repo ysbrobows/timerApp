@@ -13,6 +13,7 @@ export default function App() {
   const [isRunning, setIsRunning] = useState(false);
   const [currentTimer, setCurrentTimer] = useState(1);
   const [showSettings, setShowSettings] = useState(false); // Estado para controlar a exibição de SettingsScreen
+  const [theme, setTheme] = useState('light'); // Estado para controlar o tema
   const timerInterval = useRef<NodeJS.Timeout | null>(null);
   const sound = useRef(new Audio.Sound());
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
@@ -115,7 +116,10 @@ export default function App() {
   };
 
   return (
-    <LinearGradient colors={['#19f1b2', '#085d7f']} style={styles.container}>
+    <LinearGradient
+      colors={theme === 'light' ? ['#19f1b2', '#085d7f'] : ['#2E2E2E', '#2E2E2E']}
+      style={styles.container}
+    >
       {/* Ícone de Engrenagem no canto superior direito */}
       <Ionicons
         name="settings"
@@ -126,7 +130,7 @@ export default function App() {
 
       {/* Exibe o SettingsScreen quando o estado showSettings for true */}
       {showSettings ? (
-        <SettingsScreen setShowSettings={setShowSettings} />
+        <SettingsScreen setShowSettings={setShowSettings} setTheme={setTheme} theme={theme} />
       ) : (
         <>
           {/* Logo do aplicativo */}
