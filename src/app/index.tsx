@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../../styles';
 import SettingsScreen from './SettingsScreen';
-import { loadTheme, saveTheme } from './themeUtils';
+import { loadTheme, saveTheme, loadTimers, saveTimers } from './storageUtils';
 
 export default function App() {
   const [workSeconds, setWorkSeconds] = useState('');
@@ -18,11 +18,19 @@ export default function App() {
   const timerInterval = useRef<NodeJS.Timeout | null>(null);
   const sound = useRef(new Audio.Sound());
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
-
-    // Chama a função loadTheme quando o componente é montado
-    useEffect(() => {
-      loadTheme(); // Carrega o tema quando o componente for carregado
-    }, []);
+ 
+  // Carregamentos quando o componente for carregado
+  useEffect(() => {
+    console.log("use");
+    loadTheme(); // Carrega o tema
+    
+    loadTimers().then((timers) => {
+      setWorkSeconds(timers.workSeconds);        
+      setRestSeconds(timers.restSeconds);
+    }).catch((error) => {
+      console.error("Erro ao carregar os timers:", error);
+    });
+  }, []);
   
     // Função para alterar o tema e salvar a preferência
     const handleChangeTheme = (newTheme: string) => {
@@ -79,6 +87,7 @@ export default function App() {
       Alert.alert('Erro', 'Por favor, preencha os tempos de Trabalho e Descanso.');
       return; // Impede a execução se algum campo estiver vazio
     }
+    saveTimers(workSeconds, restSeconds)
     setIsRunning(true);
     // Começa o primeiro timer (Trabalho)
     if (workSeconds && !restSeconds) {
