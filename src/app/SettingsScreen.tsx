@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import styles from '../../styles';
+import styles from '../../stylesSettingsScreen';
 import { loadTheme, saveTheme, loadVoiceAssistant, saveVoiceAssistant } from './storageUtils';
 
 type SettingsScreenProps = {
@@ -43,30 +43,30 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ setShowSettings, setThe
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titleCfg}>Configurações</Text>
+    <View style={styles.containerSettings}>
+      <Text style={styles.titleSettings}>Configurações</Text>
 
       {/* Seletor de tema */}
-      <Text style={styles.label}>Selecione o Tema:</Text>
+      <Text style={styles.labelSettings}>Selecione o Tema:</Text>
       <Picker
         selectedValue={theme}
         onValueChange={handleThemeChange} // Chama a função handleThemeChange
-        style={styles.picker} // Aplica o estilo personalizado
+        style={styles.pickerSettings} // Aplica o estilo personalizado
       >
-        <Picker.Item label="Padrão" value="light" />
-        <Picker.Item label="Escuro" value="dark" />
+        <Picker.Item style={styles.pickerItemSettings}  label="Padrão" value="light" />
+        <Picker.Item style={styles.pickerItemSettings}  label="Escuro" value="dark" />
       </Picker>
 
       {/* Seletor de Assistente de Voz */}
-      <Text style={styles.label}>Assistente de Voz:</Text>
+      <Text style={styles.labelSettings}>Assistente de Voz:</Text>
       <Picker
         selectedValue={voiceAssistant}
         onValueChange={handleVoiceAssistantChange} // Chama a função handleVoiceAssistantChange
-        style={styles.picker}
+        style={styles.pickerSettings}
       >
-        <Picker.Item label="10 Segundos" value="10seg" />
-        <Picker.Item label="5 Segundos" value="5seg" />
-        <Picker.Item label="Desligado" value="off" />
+        <Picker.Item style={styles.pickerItemSettings} label="10 Segundos" value="10seg" />
+        <Picker.Item style={styles.pickerItemSettings}  label="5 Segundos" value="5seg" />
+        <Picker.Item style={styles.pickerItemSettings} label="Desligado" value="off" />
       </Picker>
     </View>
   );
