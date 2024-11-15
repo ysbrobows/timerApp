@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import styles from '../../styles';
 import SettingsScreen from './SettingsScreen';
-import { loadTheme, saveTheme, loadTimers, saveTimers, loadVoiceAssistant } from './storageUtils';
+import { loadTheme, saveTheme, loadTimers, saveTimers, loadVoiceAssistant, saveVoiceAssistant } from './storageUtils';
 
 export default function App() {
   const [workSeconds, setWorkSeconds] = useState('');
@@ -19,8 +19,7 @@ export default function App() {
   const sound = useRef(new Audio.Sound());
   const [isSoundLoaded, setIsSoundLoaded] = useState(false);
   const [voiceAssistantState, setVoiceAssistantState] = useState(null);
- 
-  // Carregamentos quando o componente for carregado
+   
   useEffect(() => {
     loadTheme().then((loadedTheme) => {
       setTheme(loadedTheme || 'light'); // Defina o tema carregado ou 'light' por padrão
@@ -28,14 +27,14 @@ export default function App() {
       console.error('Erro ao carregar tema:', error);
     });
 
-    //   // Carrega o estado do Voice Assistant
-    // loadVoiceAssistant().then((voiceAssistantState) => {
-    //   // Use o estado carregado do assistente de voz aqui
-    //   setVoiceAssistantState(voiceAssistantState);
-    //   console.log(voiceAssistantState); // Ou qualquer ação que deseje realizar com o estado carregado
-    // }).catch((error) => {
-    //   console.error("Erro ao carregar o assistente de voz:", error);
-    // });
+    // Carrega o estado do Voice Assistant
+    loadVoiceAssistant().then((voiceAssistantState) => {
+      // Use o estado carregado do assistente de voz aqui
+      setVoiceAssistantState(voiceAssistantState);
+      console.log(voiceAssistantState); // Ou qualquer ação que deseje realizar com o estado carregado
+    }).catch((error) => {
+      console.error("Erro ao carregar o assistente de voz:", error);
+    });
       
     loadTimers().then((timers) => {
       setWorkSeconds(timers.workSeconds);        
@@ -66,14 +65,14 @@ export default function App() {
         if (isRunning) {          
           // Alterna entre o timer de trabalho e o timer de descanso
           setCurrentTimer((prev) => (prev === 1 ? 2 : 1));
-          console.log(remainingSeconds);
-          if (currentTimer === 1 && remainingSeconds == 0 && voiceAssistantState != 'off'){
-            console.log("playRestSound");
-            playRestSound();
-          }
         }
       }
-
+      console.log(remainingSeconds);
+      console.log("esse: "+voiceAssistantState)
+      if (currentTimer === 1 && remainingSeconds == 0 && voiceAssistantState != 'off'){
+        console.log("playRestSound");
+        playRestSound();
+      }
       // Verifique se o tempo de descanso chegou a 11 segundos
       if (currentTimer === 2 && remainingSeconds === 11 && voiceAssistantState == '10seg') {
         playSound10seg(); // Tocar o som
@@ -162,7 +161,9 @@ export default function App() {
   const handleStartStop = () => {
     loadVoiceAssistant().then((voiceAssistantState) => {
       // Use o estado carregado do assistente de voz aqui
+      console.log(voiceAssistantState);
       setVoiceAssistantState(voiceAssistantState);
+      saveVoiceAssistant(voiceAssistantState);
       console.log(voiceAssistantState); // Ou qualquer ação que deseje realizar com o estado carregado
     }).catch((error) => {
       console.error("Erro ao carregar o assistente de voz:", error);
@@ -207,28 +208,26 @@ export default function App() {
           <Image source={require('../../assets/timerlogo.png')} style={styles.logo} />
 
           {/* Contêiner para os Inputs e Labels */}
-          <View style={isRunning && styles.hidden}>
-            <Text style={styles.label}>Trabalho (segundos):</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={workSeconds}
-              onChangeText={setWorkSeconds}
-              placeholder="Segundos"
-              editable={!isRunning}
-            />
-          </View>
+          <View style={isRunning ? styles.hidden : styles.box}>
+              <Text style={styles.label}>Trabalho (segundos):</Text>
+              <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                value={workSeconds}
+                onChangeText={setWorkSeconds}
+                placeholder="Segundos"
+                editable={!isRunning}
+              />
 
-          <View style={isRunning && styles.hidden}>
-            <Text style={styles.label}>Descanso (segundos):</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              value={restSeconds}
-              onChangeText={setRestSeconds}
-              placeholder="Segundos"
-              editable={!isRunning}
-            />
+              <Text style={styles.label}>Descanso (segundos):</Text>
+              <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                value={restSeconds}
+                onChangeText={setRestSeconds}
+                placeholder="Segundos"
+                editable={!isRunning}
+              />
           </View>
 
           <TouchableOpacity
@@ -239,9 +238,14 @@ export default function App() {
           </TouchableOpacity>
 
           {countdown !== null && (
-            <Text style={styles.timerText}>
-              {getTimerTitle()}: {countdown} segundos
-            </Text>
+            <View>
+              <Text style={styles.timerText}>
+                {getTimerTitle()}
+              </Text>
+              <Text style={styles.countdownText}>
+                {countdown}
+              </Text>
+            </View>
           )}
         </>
       )}

@@ -33,16 +33,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#444',
   },
   timerText: {
-    fontSize: 24,
+    fontSize: 40,
     marginVertical: 20,
     textAlign: 'center',
     color: '#fff',
   },
   button: {
     backgroundColor: '#008CBA', // Cor padrão (azul)
-    padding: 15,
+    padding: 20,
+    marginTop: 20,
     borderRadius: 5,
     alignItems: 'center',
+    width: '80%',
+    alignSelf: 'center'
   },
   buttonStop: {
     backgroundColor: '#FF0000', // Cor do botão STOP (vermelho)
@@ -79,7 +82,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#FFFFFF',
     paddingBottom: 30
-  }
+  },
+  countdownText: {
+    fontSize: 60,      // Define o tamanho da fonte como 20
+    fontWeight: 'normal',
+    color: 'white',      // Estilo para o countdown (ajuste conforme necessário)
+    textAlign: 'center',  // Centraliza o texto horizontalmente
+  },
+  box: {
+    width: '80%',  // Definindo a largura em porcentagem (pode ser ajustada conforme necessário)
+    //maxWidth: 300, // Define um valor máximo para a largura (ajuste conforme necessário)
+    alignSelf: 'center', // Isso garante que o box será centralizado
+    //padding: 20,  // Pode adicionar um padding para ajustar o espaçamento interno
+    //backgroundColor: 'lightgray',  // Apenas para visualização
+    //borderRadius: 10,  // Opcional: para bordas arredondadas
+  },
 });
 
 export default styles;
