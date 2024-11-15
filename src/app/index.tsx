@@ -7,7 +7,6 @@ import styles from '../../styles';
 import SettingsScreen from './SettingsScreen';
 import { loadTheme, saveTheme } from './themeUtils';
 
-
 export default function App() {
   const [workSeconds, setWorkSeconds] = useState('');
   const [restSeconds, setRestSeconds] = useState('');
@@ -139,7 +138,7 @@ export default function App() {
         size={30}
         color="white"
         onPress={() => setShowSettings((prev) => !prev)} // Alterna entre a tela de configurações e a tela principal
-        style={styles.settingsIcon} // Adicionando uma classe de estilo para personalizar o ícone
+        style={[styles.settingsIcon, { zIndex: 1 }]} // Adicionando uma classe de estilo para personalizar o ícone
       />
 
 
